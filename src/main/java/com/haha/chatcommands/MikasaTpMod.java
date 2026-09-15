@@ -29,17 +29,17 @@ import org.slf4j.LoggerFactory;
 /**
  * Mikasa-tp-mod - teleport, homes and TPA.
  * Author: Mikasa
- * Version: fabric-26.2-1.4 (fabric engine / MC 26.2 / mod 1.4)
+ * Version: fabric-26.3-1.5 (fabric engine / MC 26.3 / mod 1.5)
  */
 public final class MikasaTpMod implements ModInitializer {
 	public static final String AUTHOR = "Mikasa";
 	public static final String MOD_ID = "mikasa-tp-mod";
 	public static final String MOD_FOLDER = "Mikasa-tp-mod";
 	public static final String MOD_NAME = "Mikasa-tp-mod";
-	public static final String VERSION = "fabric-26.2-1.4";
+	public static final String VERSION = "fabric-26.3-1.5";
 	public static final String ENGINE = "fabric";
-	public static final String GAME_VERSION = "26.2";
-	public static final String MOD_VERSION = "1.4";
+	public static final String GAME_VERSION = "26.3";
+	public static final String MOD_VERSION = "1.5";
 	public static final String SOURCE_REPO = "https://github.com/Mikasa-not-available/Mikasa-tp-mod";
 	public static final String LOG_PREFIX = "[MikasaTP]";
 

@@ -7,15 +7,15 @@ This mod brings player teleport, TPA, and homes to a **Fabric** server — witho
 | | |
 |---|---|
 | **Mod id** | `mikasa-tp-mod` |
-| **Version** | `fabric-26.2-1.4` |
-| **Minecraft** | `26.2` |
+| **Version** | `fabric-26.3-1.5` |
+| **Minecraft** | `26.3` |
 | **Loader** | Fabric **0.19.5+** (**IMPORTANT**) |
 | **API** | Fabric API (required) |
 | **Java** | 25+ |
 | **License** | MIT |
 | **Side** | Server (clients do not need the mod) |
 
-Jar name: `Mikasa-tp-mod-fabric-26.2-1.4.jar`
+Jar name: `Mikasa-tp-mod-fabric-26.3-1.5.jar`
 
 ---
 
@@ -33,7 +33,7 @@ Jar name: `Mikasa-tp-mod-fabric-26.2-1.4.jar`
 
 ## Install
 
-1. Install Fabric Loader for Minecraft **26.2** (**IMPORTANT:** **0.19.5+**).
+1. Install Fabric Loader for Minecraft **26.3** (**IMPORTANT:** **0.19.5+**).
 2. Put this mod and **Fabric API** into the server `mods` folder.
 3. Start the server once.
 4. Edit files under `config/Mikasa-tp-mod/` if needed.
@@ -520,7 +520,7 @@ For this mod, prefer **`sync_to_database`** in `config.json`. The Python tool is
 
 | Dependency | Required? |
 |------------|-----------|
-| Minecraft 26.2 | Yes |
+| Minecraft 26.3 | Yes |
 | Fabric Loader **0.19.5+** (**IMPORTANT**) | Yes |
 | Fabric API | Yes |
 | Java 25+ | Yes |
@@ -534,7 +534,7 @@ For this mod, prefer **`sync_to_database`** in `config.json`. The Python tool is
 gradlew.bat build
 ```
 
-Output: `build/libs/Mikasa-tp-mod-fabric-26.2-1.4.jar`
+Output: `build/libs/Mikasa-tp-mod-fabric-26.3-1.5.jar`
 
 ---
 

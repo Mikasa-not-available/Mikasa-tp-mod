@@ -34,16 +34,16 @@ public final class ReadmeWriter {
 
 				Repository: %s
 
-				Мод команд телепорта, домов и TPA для Fabric Minecraft 26.2.
+				Мод команд телепорта, домов и TPA для Fabric Minecraft 26.3.
 				Достаточно положить jar в папку `mods` вместе с Fabric API.
 				Полная документация (схема БД, роли, sync): %s
 
 				## Быстрый старт (только jar)
 
-				1. Установи Fabric Loader на сервер (Minecraft 26.2).
+				1. Установи Fabric Loader на сервер (Minecraft 26.3).
 				2. Положи в `mods`:
 				   - `Mikasa-tp-mod-%s.jar`
-				   - `fabric-api` для 26.2
+				   - `fabric-api` для 26.3
 				3. Запусти сервер один раз.
 				4. Появится папка `config/Mikasa-tp-mod/` с файлами:
 				   - `config.json` - роли, права команд, дома (JSON-хранилище)
