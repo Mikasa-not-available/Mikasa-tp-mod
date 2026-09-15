@@ -1,0 +1,78 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+	id 'maven-publish'
+}
+
+version = project.version
+group = project.maven_group
+base {
+	archivesName = project.archives_base_name
+}
+
+repositories {
+	maven {
+		name = 'AliyunPublic'
+		url = 'https://maven.aliyun.com/repository/public'
+	}
+	maven {
+		name = 'HuaweiMaven'
+		url = 'https://repo.huaweicloud.com/repository/maven/'
+	}
+	maven {
+		name = 'Fabric'
+		url = 'https://maven.fabricmc.net/'
+	}
+	maven {
+		name = 'MinecraftLibraries'
+		url = 'https://libraries.minecraft.net/'
+	}
+}
+
+// Server-focused: keep server IDE run config, drop client (fewer deps for ideaSyncTask)
+loom {
+	runs {
+		remove client
+		server {
+			server()
+			ideConfigGenerated = true
+			runDir = 'run'
+		}
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	include(implementation("org.postgresql:postgresql:${project.postgresql_version}"))
+	include(implementation("com.mysql:mysql-connector-j:${project.mysql_version}"))
+	include(implementation("com.zaxxer:HikariCP:${project.hikaricp_version}"))
+	include(implementation("org.slf4j:slf4j-api:2.0.16"))
+}
+
+processResources {
+	def version = project.version
+	inputs.property "version", version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+	it.options.encoding = "UTF-8"
+}
+
+java {
+	withSourcesJar()
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.base.archivesName.get()}" }
+	}
+}

@@ -1,0 +1,23 @@
+{
+	"schemaVersion": 1,
+	"id": "mikasa-tp-mod",
+	"version": "${version}",
+	"name": "Mikasa-tp-mod",
+	"description": "Teleport, homes and TPA by Mikasa. Commands: /tphelp. Supports PostgreSQL and MySQL (configdatabase.json); without DB uses JSON in config/Mikasa-tp-mod/.",
+	"authors": [
+		"Mikasa"
+	],
+	"license": "MIT",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.haha.chatcommands.MikasaTpMod"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
