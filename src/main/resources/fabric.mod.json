@@ -3,7 +3,7 @@
 	"id": "mikasa-tp-mod",
 	"version": "${version}",
 	"name": "Mikasa-tp-mod",
-	"description": "Teleport, homes and TPA by Mikasa. Commands: /tphelp. Supports PostgreSQL and MySQL (configdatabase.json); without DB uses JSON in config/Mikasa-tp-mod/.",
+	"description": "Teleport, homes and TPA by Mikasa. Commands: /tphelp. Shared DB: config/Mikasa-mods-general/database/; without DB uses JSON in config/Mikasa-tp-mod/.",
 	"authors": [
 		"Mikasa"
 	],

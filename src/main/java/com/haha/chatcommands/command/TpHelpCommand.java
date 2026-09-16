@@ -42,11 +42,11 @@ public final class TpHelpCommand implements CommandHandler {
 		send(source, "/tpaccept - accept incoming TPA");
 		send(source, "/tpdeny - deny incoming TPA");
 		send(source, "/tpacancel - cancel your TPA / warmup");
-		send(source, "/homeset <name> - save home at your position");
+		send(source, "/home set <name> - save home at your position");
 		send(source, "/home <name> - teleport to home");
-		send(source, "/homedel <name> - delete home");
-		send(source, "/homeList - list your homes");
-		send(source, "Config: config/Mikasa-tp-mod/ | DB: configdatabase.json | Help file: README.md");
+		send(source, "/home del <name> - delete home");
+		send(source, "/home list - list your homes");
+		send(source, "Config: config/Mikasa-tp-mod/ | DB: config/Mikasa-mods-general/database/ | Help: README.md");
 		return Command.SINGLE_SUCCESS;
 	}
 

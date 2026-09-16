@@ -7,7 +7,7 @@ This mod brings player teleport, TPA, and homes to a **Fabric** server — witho
 | | |
 |---|---|
 | **Mod id** | `mikasa-tp-mod` |
-| **Version** | `fabric-26.3-1.5` |
+| **Version** | `fabric-26.3-2.0` |
 | **Minecraft** | `26.3` |
 | **Loader** | Fabric **0.19.5+** (**IMPORTANT**) |
 | **API** | Fabric API (required) |
@@ -15,7 +15,7 @@ This mod brings player teleport, TPA, and homes to a **Fabric** server — witho
 | **License** | MIT |
 | **Side** | Server (clients do not need the mod) |
 
-Jar name: `Mikasa-tp-mod-fabric-26.3-1.5.jar`
+Jar name: `Mikasa-tp-mod-fabric-26.3-2.0.jar`
 
 ---
 
@@ -23,7 +23,7 @@ Jar name: `Mikasa-tp-mod-fabric-26.3-1.5.jar`
 
 - Direct teleport: `/tp <player>` (role-gated; replaces vanilla `/tp` registration so non-ops can use it when allowed). **By default non-ops / role `player` get `tp: false`** and cannot use `/tp` until a higher role or config grants it
 - TPA requests: `/tpa`, `/tpaccept`, `/tpdeny`, `/tpacancel` with a 5-second stand-still warmup (movement cancels — protection against TP mid-fight)
-- Homes: `/homeset`, `/home`, `/homedel`, `/homeList`
+- Homes: `/home set`, `/home <name>`, `/home del`, `/home list`
 - Help: `/tphelp`
 - Role-based command permissions
 - Storage: **JSON by default**, optional **PostgreSQL** or **MySQL** (schema below)
@@ -36,7 +36,7 @@ Jar name: `Mikasa-tp-mod-fabric-26.3-1.5.jar`
 1. Install Fabric Loader for Minecraft **26.3** (**IMPORTANT:** **0.19.5+**).
 2. Put this mod and **Fabric API** into the server `mods` folder.
 3. Start the server once.
-4. Edit files under `config/Mikasa-tp-mod/` if needed.
+4. Edit files under `config/Mikasa-tp-mod/` (and shared DB under `config/Mikasa-mods-general/database/`) if needed.
 5. In-game: `/tphelp`.
 
 On first launch the mod creates:
@@ -44,8 +44,11 @@ On first launch the mod creates:
 ```
 config/Mikasa-tp-mod/
   config.json            # roles, permissions, players, homes, settings, sync flag
-  configdatabase.json    # optional DB connection (disabled by default)
   README.md              # short install notes (auto-written)
+
+config/Mikasa-mods-general/database/
+  configdatabase.json    # optional shared DB connection (disabled by default)
+  README.md              # short DB notes (created if missing)
 ```
 
 If a config file is broken JSON, it is renamed to `*.broken` and a fresh default is created.
@@ -62,12 +65,12 @@ If a config file is broken JSON, it is renamed to `*.broken` and a fresh default
 | `/tpaccept` | `tpaccept` | Accept incoming TPA |
 | `/tpdeny` | `tpdeny` | Deny incoming TPA |
 | `/tpacancel` | `tpacancel` | Cancel your TPA / warmup (or deny your pending incoming) |
-| `/homeset <name>` | `homeset` | Save a home at your position |
+| `/home set <name>` | `home` | Save a home at your position |
 | `/home <name>` | `home` | Teleport to a saved home |
-| `/homedel <name>` | `homedel` | Delete a home |
-| `/homeList` | `homeList` | List your homes (`count/max`) |
+| `/home del <name>` | `home` | Delete a home |
+| `/home list` | `home` | List your homes (`count/max`) |
 
-Permission key == command name used in role configs and in the `commands` / `role_permissions` tables.
+Permission key == command name used in role configs and in the `commands` / `role_permissions` tables. All home subcommands share the single key `home`.
 
 ### TPA flow (brief)
 
@@ -84,7 +87,7 @@ Permission key == command name used in role configs and in the `commands` / `rol
 | Mode | When | Roles / settings / homes |
 |------|------|---------------------------|
 | **JSON** | DB disabled, misconfigured, or unreachable | `config.json` |
-| **Database** | `configdatabase.json` usable and connect succeeds | SQL tables |
+| **Database** | shared `configdatabase.json` usable and connect succeeds | SQL tables |
 
 Startup prefers the database when connected. If a DB query fails at runtime, many paths fall back to JSON.
 
@@ -95,9 +98,9 @@ Launch log examples:
 
 ---
 
-## `configdatabase.json`
+## `config/Mikasa-mods-general/database/configdatabase.json`
 
-Created empty / disabled by default. Example:
+Shared across Mikasa mods. Created empty / disabled by default. Example:
 
 ```json
 {
@@ -155,7 +158,7 @@ Seeded: `player`.
 
 | Column | Type | Description |
 |--------|------|-------------|
-| `name` | text / varchar PK | Permission / command key, e.g. `tp`, `homeList` |
+| `name` | text / varchar PK | Permission / command key, e.g. `tp`, `home` |
 
 ### `role_permissions`
 
@@ -189,7 +192,7 @@ Known setting used by the mod:
 
 | Key | Default | Meaning |
 |-----|---------|---------|
-| `max_homes` | `5` | Max homes per player for `/homeset` (new homes only) |
+| `max_homes` | `5` | Max homes per player for `/home set` (new homes only) |
 
 ### `homes`
 
@@ -202,7 +205,7 @@ Known setting used by the mod:
 | `yaw`, `pitch` | float | Look direction |
 | PK | (`player_uuid`, `home_name`) | |
 
-Homes are upserted on `/homeset` and deleted on `/homedel`.
+Homes are upserted on `/home set` and deleted on `/home del`.
 
 ### PostgreSQL reference DDL
 
@@ -266,10 +269,7 @@ MySQL uses compatible types (`VARCHAR`, `CHAR(36)`, `DOUBLE`, `FLOAT`, etc.) wit
       "commands": {
         "tphelp": true,
         "tp": false,
-        "homeset": true,
         "home": true,
-        "homedel": true,
-        "homeList": true,
         "tpa": true,
         "tpaccept": true,
         "tpdeny": true,
@@ -280,10 +280,7 @@ MySQL uses compatible types (`VARCHAR`, `CHAR(36)`, `DOUBLE`, `FLOAT`, etc.) wit
       "commands": {
         "tphelp": true,
         "tp": true,
-        "homeset": true,
         "home": true,
-        "homedel": true,
-        "homeList": true,
         "tpa": true,
         "tpaccept": true,
         "tpdeny": true,
@@ -294,10 +291,7 @@ MySQL uses compatible types (`VARCHAR`, `CHAR(36)`, `DOUBLE`, `FLOAT`, etc.) wit
       "commands": {
         "tphelp": true,
         "tp": true,
-        "homeset": true,
         "home": true,
-        "homedel": true,
-        "homeList": true,
         "tpa": true,
         "tpaccept": true,
         "tpdeny": true,
@@ -316,7 +310,7 @@ MySQL uses compatible types (`VARCHAR`, `CHAR(36)`, `DOUBLE`, `FLOAT`, etc.) wit
 |---------|----------|-------------|---------|
 | `tphelp` | yes | yes | yes |
 | `tp` | **no** | yes | yes |
-| `homeset` / `home` / `homedel` / `homeList` | yes | yes | yes |
+| `home` (`set` / `<name>` / `del` / `list`) | yes | yes | yes |
 | `tpa` / `tpaccept` / `tpdeny` / `tpacancel` | yes | yes | yes |
 
 ### Players block (JSON mode)
@@ -372,10 +366,7 @@ Only **players** can use these commands (console is rejected by the permission g
   "commands": {
     "tphelp": true,
     "tp": true,
-    "homeset": true,
     "home": true,
-    "homedel": true,
-    "homeList": true,
     "tpa": true,
     "tpaccept": true,
     "tpdeny": true,
@@ -395,17 +386,14 @@ INSERT INTO roles (name) VALUES ('vip')
   ON CONFLICT DO NOTHING;
 
 INSERT INTO commands (name) VALUES
-  ('tphelp'), ('tp'), ('homeset'), ('home'), ('homedel'),
-  ('homeList'), ('tpa'), ('tpaccept'), ('tpdeny'), ('tpacancel')
+  ('tphelp'), ('tp'), ('home'),
+  ('tpa'), ('tpaccept'), ('tpdeny'), ('tpacancel')
   ON CONFLICT DO NOTHING;
 
 INSERT INTO role_permissions (role_name, command_name, allowed) VALUES
   ('vip', 'tphelp', TRUE),
   ('vip', 'tp', TRUE),
-  ('vip', 'homeset', TRUE),
   ('vip', 'home', TRUE),
-  ('vip', 'homedel', TRUE),
-  ('vip', 'homeList', TRUE),
   ('vip', 'tpa', TRUE),
   ('vip', 'tpaccept', TRUE),
   ('vip', 'tpdeny', TRUE),
@@ -451,7 +439,7 @@ At server startup, after a successful DB connection:
 ### How to use it
 
 1. Edit `roles` and `settings` in `config.json` the way you want the database to look.
-2. Ensure `configdatabase.json` is enabled and correct.
+2. Ensure shared `config/Mikasa-mods-general/database/configdatabase.json` is enabled and correct.
 3. Set `"sync_to_database": true`.
 4. Restart the server.
 5. Check logs for sync success; flag should return to `false`.
@@ -534,7 +522,7 @@ For this mod, prefer **`sync_to_database`** in `config.json`. The Python tool is
 gradlew.bat build
 ```
 
-Output: `build/libs/Mikasa-tp-mod-fabric-26.3-1.5.jar`
+Output: `build/libs/Mikasa-tp-mod-fabric-26.3-2.0.jar`
 
 ---
 

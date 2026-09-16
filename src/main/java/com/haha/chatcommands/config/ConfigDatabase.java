@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.haha.chatcommands.MikasaTpMod;
+import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -13,11 +14,13 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 /**
- * DB settings file: {@code config/Mikasa-tp-mod/configdatabase.json}
+ * Shared DB settings: {@code config/Mikasa-mods-general/database/configdatabase.json}
  * Author: Mikasa
  */
 public final class ConfigDatabase {
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+	public static final String SHARED_ROOT = "Mikasa-mods-general";
+	public static final String SHARED_SUBDIR = "database";
 	public static final String FILE_NAME = "configdatabase.json";
 
 	public enum DbType {
@@ -40,9 +43,17 @@ public final class ConfigDatabase {
 	private final Path file;
 	private final Data data;
 
-	public ConfigDatabase(Path modConfigDir) {
-		this.file = modConfigDir.resolve(FILE_NAME);
+	public ConfigDatabase() {
+		this.file = sharedDir().resolve(FILE_NAME);
 		this.data = loadOrCreate();
+	}
+
+	public static Path sharedDir() {
+		return FabricLoader.getInstance().getConfigDir().resolve(SHARED_ROOT).resolve(SHARED_SUBDIR);
+	}
+
+	public static String sharedPathLog() {
+		return SHARED_ROOT + "/" + SHARED_SUBDIR + "/" + FILE_NAME;
 	}
 
 	public Path file() {
@@ -95,10 +106,11 @@ public final class ConfigDatabase {
 	private Data loadOrCreate() {
 		try {
 			Files.createDirectories(file.getParent());
+			writeSharedReadmeIfMissing();
 			if (!Files.exists(file)) {
 				Data empty = Data.empty();
 				write(empty);
-				MikasaTpMod.log("created empty " + FILE_NAME);
+				MikasaTpMod.log("created empty " + sharedPathLog());
 				return empty;
 			}
 			try (Reader reader = Files.newBufferedReader(file)) {
@@ -126,6 +138,39 @@ public final class ConfigDatabase {
 			MikasaTpMod.log("failed to load " + FILE_NAME + " - using empty in-memory config");
 			MikasaTpMod.LOGGER.error("Failed to load {}", file, e);
 			return Data.empty();
+		}
+	}
+
+	private void writeSharedReadmeIfMissing() {
+		Path readme = sharedDir().resolve("README.md");
+		if (Files.exists(readme)) {
+			return;
+		}
+		String body = """
+				# Mikasa-mods-general / database
+
+				Shared database connection for Mikasa mods.
+
+				File: `config/Mikasa-mods-general/database/configdatabase.json`
+
+				```json
+				{
+				  "type": "postgres",
+				  "enabled": true,
+				  "host": "127.0.0.1",
+				  "port": 5432,
+				  "database": "minecraft",
+				  "username": "minecraft",
+				  "password": "secret"
+				}
+				```
+
+				Mods keep their own tables (e.g. TP uses `homes`, RPG uses `rpg_*`).
+				""";
+		try {
+			Files.writeString(readme, body);
+		} catch (IOException e) {
+			MikasaTpMod.LOGGER.warn("Could not write {}", readme, e);
 		}
 	}
 

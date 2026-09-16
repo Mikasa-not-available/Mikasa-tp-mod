@@ -34,30 +34,31 @@ public final class ReadmeWriter {
 
 				Repository: %s
 
-				Мод команд телепорта, домов и TPA для Fabric Minecraft 26.3.
-				Достаточно положить jar в папку `mods` вместе с Fabric API.
-				Полная документация (схема БД, роли, sync): %s
+				Teleport, homes, and TPA commands for Fabric Minecraft 26.3.
+				Drop the jar into the `mods` folder together with Fabric API.
+				Full documentation (DB schema, roles, sync): %s
 
-				## Быстрый старт (только jar)
+				## Quick start (jar only)
 
-				1. Установи Fabric Loader на сервер (Minecraft 26.3).
-				2. Положи в `mods`:
+				1. Install Fabric Loader on the server (Minecraft 26.3).
+				2. Put into `mods`:
 				   - `Mikasa-tp-mod-%s.jar`
-				   - `fabric-api` для 26.3
-				3. Запусти сервер один раз.
-				4. Появится папка `config/Mikasa-tp-mod/` с файлами:
-				   - `config.json` - роли, права команд, дома (JSON-хранилище)
-				   - `configdatabase.json` - настройки базы данных
-				   - `README.md` - эта инструкция
-				5. В игре: `/tphelp` - полный список команд.
+				   - `fabric-api` for 26.3
+				3. Start the server once.
+				4. These files appear:
+				   - `config/Mikasa-tp-mod/config.json` - roles, permissions, homes (JSON)
+				   - `config/Mikasa-tp-mod/README.md` - this guide
+				   - `config/Mikasa-mods-general/database/configdatabase.json` - shared DB
+				5. In-game: `/tphelp` - full command list.
 
-				Без базы мод уже работает на JSON.
+				Without a database the mod already works on JSON.
 
-				## База данных (опционально)
+				## Database (optional)
 
-				Файл: `config/Mikasa-tp-mod/configdatabase.json`
+				File: `config/Mikasa-mods-general/database/configdatabase.json`
+				(shared across Mikasa mods)
 
-				Пример для PostgreSQL:
+				PostgreSQL example:
 
 				```json
 				{
@@ -71,7 +72,7 @@ public final class ReadmeWriter {
 				}
 				```
 
-				Пример для MySQL:
+				MySQL example:
 
 				```json
 				{
@@ -85,20 +86,20 @@ public final class ReadmeWriter {
 				}
 				```
 
-				Поля:
-				- `type` - `postgres` или `mysql` (также `sql` = mysql)
-				- `enabled` - `true`, чтобы включить БД
+				Fields:
+				- `type` - `postgres` or `mysql` (`sql` also means mysql)
+				- `enabled` - set `true` to use the database
 				- `host`, `port`, `database`, `username`, `password`
 
-				По умолчанию файл создаётся **пустым** (`enabled: false`). Пока БД не настроена, используются JSON-файлы.
+				By default the file is created **empty** (`enabled: false`). Until the DB is configured, JSON files are used.
 
-				Если БД недоступна при старте - мод автоматически переключается на JSON.
+				If the database is unavailable at startup, the mod falls back to JSON automatically.
 
-				Нужные таблицы создаются при успешном подключении.
+				Required tables are created on a successful connection.
 
-				## Синхронизация config.json -> база данных
+				## Sync config.json -> database
 
-				В `config.json` есть флаг:
+				`config.json` has a flag:
 
 				```json
 				{
@@ -108,35 +109,36 @@ public final class ReadmeWriter {
 				}
 				```
 
-				1. Отредактируй роли/настройки в `config.json` как нужно.
-				2. Поставь `"sync_to_database": true`.
-				3. Перезапусти сервер (БД должна быть включена в `configdatabase.json`).
-				4. Мод применит роли и settings в БД, затем **сам** вернёт флаг в `false`.
+				1. Edit roles/settings in `config.json` as needed.
+				2. Set `"sync_to_database": true`.
+				3. Restart the server (DB must be enabled in the shared `configdatabase.json`).
+				4. The mod applies roles and settings to the DB, then sets the flag back to `false`.
 
-				**ВНИМАНИЕ:** при синхронизации старые роли, права команд и settings в БД
-				**сносятся/заменяются** содержимым из `config.json`. Игроки с удалёнными ролями
-				переводятся на `player`. Таблица домов (`homes`) не трогается.
+				**WARNING:** sync **replaces** roles, command permissions, and settings in the DB
+				with the contents of `config.json`. Players on removed roles are moved to `player`.
+				The homes table is not touched.
 
-				Python-скрипт для синхронизации не нужен.
+				A Python sync script is not required.
 
-				## Команды
+				## Commands
 
-				| Команда | Описание |
-				|---------|----------|
-				| `/tphelp` | Список всех команд мода |
-				| `/tp <игрок>` | Телепорт к игроку (по правам роли) |
-				| `/tpa <игрок>` | Запрос телепорта |
-				| `/tpaccept` | Принять TPA |
-				| `/tpdeny` | Отклонить TPA |
-				| `/tpacancel` | Отменить свой TPA |
-				| `/homeset <имя>` | Сохранить дом |
-				| `/home <имя>` | Телепорт домой |
-				| `/homedel <имя>` | Удалить дом |
-				| `/homeList` | Список своих домов |
+				| Command | Description |
+				|---------|-------------|
+				| `/tphelp` | List all mod commands |
+				| `/tp <player>` | Teleport to a player (role permission) |
+				| `/tpa <player>` | Request teleport |
+				| `/tpaccept` | Accept TPA |
+				| `/tpdeny` | Deny TPA |
+				| `/tpacancel` | Cancel your TPA |
+				| `/home set <name>` | Save a home |
+				| `/home <name>` | Teleport home |
+				| `/home del <name>` | Delete a home |
+				| `/home list` | List your homes |
 
-				Права ролей и лимит домов (`max_homes`) настраиваются в `config.json`.
+				Role permissions and the home limit (`max_homes`) are configured in `config.json`.
+				Permission key for all home subcommands: `home`.
 
-				## Права ролей (config.json)
+				## Role permissions (config.json)
 
 				```json
 				{
@@ -146,6 +148,7 @@ public final class ReadmeWriter {
 				      "commands": {
 				        "tp": true,
 				        "tpa": true,
+				        "home": true,
 				        "tphelp": true
 				      }
 				    }
@@ -153,9 +156,9 @@ public final class ReadmeWriter {
 				}
 				```
 
-				Игрокам роли обычно назначает отдельный мод / запись в таблице `players` (или блок `players` в JSON).
+				Player roles are usually assigned by another mod / a `players` table row (or the `players` block in JSON).
 
-				## Поддержка
+				## Support
 
 				Author: Mikasa  
 				Repository: %s  

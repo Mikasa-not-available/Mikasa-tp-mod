@@ -228,11 +228,6 @@ public final class LocalJsonConfig {
 				if (!role.commands.containsKey("tphelp")) {
 					role.commands.put("tphelp", true);
 				}
-				// migrate old permission key homes -> homeList
-				if (role.commands.containsKey("homes") && !role.commands.containsKey("homeList")) {
-					role.commands.put("homeList", role.commands.get("homes"));
-				}
-				role.commands.remove("homes");
 			}
 		}
 
@@ -248,10 +243,7 @@ public final class LocalJsonConfig {
 			Map<String, Boolean> playerCommands = new LinkedHashMap<>();
 			playerCommands.put("tphelp", true);
 			playerCommands.put("tp", false);
-			playerCommands.put("homeset", true);
 			playerCommands.put("home", true);
-			playerCommands.put("homedel", true);
-			playerCommands.put("homeList", true);
 			playerCommands.put("tpa", true);
 			playerCommands.put("tpaccept", true);
 			playerCommands.put("tpdeny", true);
