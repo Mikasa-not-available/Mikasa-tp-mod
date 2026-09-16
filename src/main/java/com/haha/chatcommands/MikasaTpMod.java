@@ -2,9 +2,6 @@ package com.haha.chatcommands;
 
 import com.haha.chatcommands.command.CommandRegistry;
 import com.haha.chatcommands.command.HomeCommand;
-import com.haha.chatcommands.command.HomeDelCommand;
-import com.haha.chatcommands.command.HomeSetCommand;
-import com.haha.chatcommands.command.HomesCommand;
 import com.haha.chatcommands.command.TpAcceptCommand;
 import com.haha.chatcommands.command.TpCommand;
 import com.haha.chatcommands.command.TpDenyCommand;
@@ -29,17 +26,17 @@ import org.slf4j.LoggerFactory;
 /**
  * Mikasa-tp-mod - teleport, homes and TPA.
  * Author: Mikasa
- * Version: fabric-26.3-1.5 (fabric engine / MC 26.3 / mod 1.5)
+ * Version: fabric-26.3-2.0 (fabric engine / MC 26.3 / mod 2.0)
  */
 public final class MikasaTpMod implements ModInitializer {
 	public static final String AUTHOR = "Mikasa";
 	public static final String MOD_ID = "mikasa-tp-mod";
 	public static final String MOD_FOLDER = "Mikasa-tp-mod";
 	public static final String MOD_NAME = "Mikasa-tp-mod";
-	public static final String VERSION = "fabric-26.3-1.5";
+	public static final String VERSION = "fabric-26.3-2.0";
 	public static final String ENGINE = "fabric";
 	public static final String GAME_VERSION = "26.3";
-	public static final String MOD_VERSION = "1.5";
+	public static final String MOD_VERSION = "2.0";
 	public static final String SOURCE_REPO = "https://github.com/Mikasa-not-available/Mikasa-tp-mod";
 	public static final String LOG_PREFIX = "[MikasaTP]";
 
@@ -64,7 +61,7 @@ public final class MikasaTpMod implements ModInitializer {
 
 		localConfig = new LocalJsonConfig();
 		ReadmeWriter.write(localConfig.configDir());
-		configDatabase = new ConfigDatabase(localConfig.configDir());
+		configDatabase = new ConfigDatabase();
 		database = Database.tryConnect(configDatabase);
 		DatabaseConfigSync.maybeSync(database, localConfig);
 
@@ -76,10 +73,7 @@ public final class MikasaTpMod implements ModInitializer {
 		CommandRegistry registry = new CommandRegistry(permissions);
 		registry.register(new TpHelpCommand());
 		registry.register(new TpCommand());
-		registry.register(new HomeSetCommand(homes, settings));
-		registry.register(new HomeCommand(homes));
-		registry.register(new HomeDelCommand(homes));
-		registry.register(new HomesCommand(homes, settings));
+		registry.register(new HomeCommand(homes, settings));
 		registry.register(new TpaCommand(tpaManager));
 		registry.register(new TpAcceptCommand(tpaManager));
 		registry.register(new TpDenyCommand(tpaManager));

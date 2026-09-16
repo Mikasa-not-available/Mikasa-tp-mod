@@ -45,17 +45,18 @@ public final class ReadmeWriter {
 				   - `Mikasa-tp-mod-%s.jar`
 				   - `fabric-api` для 26.3
 				3. Запусти сервер один раз.
-				4. Появится папка `config/Mikasa-tp-mod/` с файлами:
-				   - `config.json` - роли, права команд, дома (JSON-хранилище)
-				   - `configdatabase.json` - настройки базы данных
-				   - `README.md` - эта инструкция
+				4. Появится:
+				   - `config/Mikasa-tp-mod/config.json` - роли, права, дома (JSON)
+				   - `config/Mikasa-tp-mod/README.md` - эта инструкция
+				   - `config/Mikasa-mods-general/database/configdatabase.json` - общая БД
 				5. В игре: `/tphelp` - полный список команд.
 
 				Без базы мод уже работает на JSON.
 
 				## База данных (опционально)
 
-				Файл: `config/Mikasa-tp-mod/configdatabase.json`
+				Файл: `config/Mikasa-mods-general/database/configdatabase.json`
+				(общий для модов Mikasa)
 
 				Пример для PostgreSQL:
 
@@ -110,7 +111,7 @@ public final class ReadmeWriter {
 
 				1. Отредактируй роли/настройки в `config.json` как нужно.
 				2. Поставь `"sync_to_database": true`.
-				3. Перезапусти сервер (БД должна быть включена в `configdatabase.json`).
+				3. Перезапусти сервер (БД должна быть включена в shared `configdatabase.json`).
 				4. Мод применит роли и settings в БД, затем **сам** вернёт флаг в `false`.
 
 				**ВНИМАНИЕ:** при синхронизации старые роли, права команд и settings в БД
@@ -129,12 +130,13 @@ public final class ReadmeWriter {
 				| `/tpaccept` | Принять TPA |
 				| `/tpdeny` | Отклонить TPA |
 				| `/tpacancel` | Отменить свой TPA |
-				| `/homeset <имя>` | Сохранить дом |
+				| `/home set <имя>` | Сохранить дом |
 				| `/home <имя>` | Телепорт домой |
-				| `/homedel <имя>` | Удалить дом |
-				| `/homeList` | Список своих домов |
+				| `/home del <имя>` | Удалить дом |
+				| `/home list` | Список своих домов |
 
 				Права ролей и лимит домов (`max_homes`) настраиваются в `config.json`.
+				Ключ права для всех подкоманд home: `home`.
 
 				## Права ролей (config.json)
 
@@ -146,6 +148,7 @@ public final class ReadmeWriter {
 				      "commands": {
 				        "tp": true,
 				        "tpa": true,
+				        "home": true,
 				        "tphelp": true
 				      }
 				    }
